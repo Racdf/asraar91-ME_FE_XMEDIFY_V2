@@ -39,19 +39,12 @@ export default function Home() {
           </Stack>
         </Container>
       </Box>
-
       <Offers />
-
       <Specialization />
-
       <Specialists />
-
       <PatientCaring />
-
       <Blogs />
-
       <OurFamilies />
-
       <FAQs />
     </Box>
   );

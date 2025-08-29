@@ -5,7 +5,6 @@ import SearchIcon from "@mui/icons-material/Search";
 export default function SearchBar({ list, filterList }) {
   const [inputText, setInputText] = useState("");
 
-  // Memoizing the filtered list
   const filteredList = useMemo(() => {
     if (!inputText.trim()) return list;
     return list.filter((item) =>
@@ -30,7 +29,7 @@ export default function SearchBar({ list, filterList }) {
           fullWidth
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
-          inputProps={{ maxLength: 100 }} // Limiting input to 100 characters
+          inputProps={{ maxLength: 100 }}
         />
         <Button
           type="submit"
