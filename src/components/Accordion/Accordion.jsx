@@ -6,23 +6,22 @@ import MuiAccordionSummary from '@mui/material/AccordionSummary';
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 
-const Accordion = styled((props) => (
-    <MuiAccordion disableGutters elevation={0} square {...props} />
-))(({ theme }) => ({
-    '&::before': {
-        display: 'none',
-    },
-    '&:not(:last-child)': {
-        marginBottom: 24,
-    },
+const Accordion = styled((props) => {
+    return <MuiAccordion square elevation={0} disableGutters {...props} />;
+})(({ theme }) => ({
+    '&::before': { display: 'none' },
+    '&:not(:last-child)': { marginBottom: 24 },
 }));
 
-const AccordionSummary = styled((props) => (
-    <MuiAccordionSummary
-        expandIcon={<AddIcon sx={{ color: 'primary.main' }} />}
-        {...props}
-    />
-))(({ theme }) => ({
+const AccordionSummary = styled((props) => {
+    return (
+        <MuiAccordionSummary
+            expandIcon={<AddIcon sx={{ color: 'primary.main' }} />}
+            {...props}
+        />
+    );
+})(({ theme }) => ({
+    padding: 0,
     backgroundColor: false,
     '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
         transform: 'rotate(45deg)',
@@ -30,43 +29,53 @@ const AccordionSummary = styled((props) => (
     '& .MuiAccordionSummary-content': {
         marginLeft: 0,
     },
-    padding: 0,
 }));
 
-const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
+const AccordionDetails = styled((props) => {
+    return <MuiAccordionDetails {...props} />;
+})(({ theme }) => ({
     padding: 0,
 }));
 
 export default function CustomizedAccordions({ data }) {
     const [expanded, setExpanded] = React.useState('');
 
-    const handleChange = (panel) => (event, newExpanded) => {
-        setExpanded(newExpanded ? panel : false);
-    };
+    const handleChange = React.useCallback(
+        (panel) => (event, newExpanded) => {
+            setExpanded(newExpanded ? panel : false);
+        },
+        []
+    );
 
     return (
         <div>
-            {data.map((item, index) => (
-                <Accordion key={index} expanded={expanded === `panel${index}`} onChange={handleChange(`panel${index}`)}>
-                    <AccordionSummary aria-controls={`panel${index}d-content`} id={`panel${index}d-header`}>
-                        <Typography
-                            fontSize={18}
-                            fontWeight={700}
-                            color='#1B3C74'
-                            lineHeight={1.2}
+            {data.map((item, idx) => {
+                const panelId = `panel${idx}`;
+                return (
+                    <Accordion
+                        key={idx}
+                        expanded={expanded === panelId}
+                        onChange={handleChange(panelId)}
+                    >
+                        <AccordionSummary
+                            aria-controls={`${panelId}d-content`}
+                            id={`${panelId}d-header`}
                         >
-                            {item.question}
-                        </Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                        <Typography
-                            fontSize={14}
-                        >
-                            {item.answer}
-                        </Typography>
-                    </AccordionDetails>
-                </Accordion>
-            ))}
+                            <Typography
+                                fontSize={18}
+                                fontWeight={700}
+                                color="#1B3C74"
+                                lineHeight={1.2}
+                            >
+                                {item.question}
+                            </Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <Typography fontSize={14}>{item.answer}</Typography>
+                        </AccordionDetails>
+                    </Accordion>
+                );
+            })}
         </div>
     );
 }

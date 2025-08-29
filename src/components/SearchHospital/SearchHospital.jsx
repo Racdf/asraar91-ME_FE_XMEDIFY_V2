@@ -1,11 +1,9 @@
-import { MenuItem, Select, Button, InputAdornment, Box } from "@mui/material";
+import { MenuItem, Select, Button, Box } from "@mui/material";
 import { useEffect, useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-//Component to search the hospitals based on State and City selection.
-//API used to fetch details of hospital and set the values in formData
 export default function SearchHospital() {
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
@@ -15,15 +13,14 @@ export default function SearchHospital() {
   useEffect(() => {
     const fetchStates = async () => {
       try {
-        const response = await axios.get(
+        const { data } = await axios.get(
           "https://meddata-backend.onrender.com/states"
         );
-        setStates(response.data);
+        setStates(data);
       } catch (error) {
         console.error("Error fetching states:", error);
       }
     };
-
     fetchStates();
   }, []);
 
@@ -32,17 +29,16 @@ export default function SearchHospital() {
       setCities([]);
       setFormData((prev) => ({ ...prev, city: "" }));
       try {
-        const data = await axios.get(
+        const { data } = await axios.get(
           `https://meddata-backend.onrender.com/cities/${formData.state}`
         );
-        setCities(data.data);
-        // console.log("city", data.data);
+        setCities(data);
       } catch (error) {
-        console.log("Error in fetching city:", error);
+        console.error("Error fetching cities:", error);
       }
     };
 
-    if (formData.state !== "") {
+    if (formData.state) {
       fetchCities();
     }
   }, [formData.state]);
@@ -65,8 +61,7 @@ export default function SearchHospital() {
       onSubmit={handleSubmit}
       sx={{
         display: "flex",
-        gap: 4,
-        justifyContent: "space-between",
+        gap: 3,
         flexDirection: { xs: "column", md: "row" },
       }}
     >
@@ -76,16 +71,11 @@ export default function SearchHospital() {
         name="state"
         value={formData.state}
         onChange={handleChange}
-        startAdornment={
-          <InputAdornment position="start">
-            <SearchIcon />
-          </InputAdornment>
-        }
         required
         sx={{ minWidth: 200, width: "100%" }}
       >
-        <MenuItem disabled value="" selected>
-          State
+        <MenuItem disabled value="">
+          Select State
         </MenuItem>
         {states.map((state) => (
           <MenuItem key={state} value={state}>
@@ -100,16 +90,12 @@ export default function SearchHospital() {
         name="city"
         value={formData.city}
         onChange={handleChange}
-        startAdornment={
-          <InputAdornment position="start">
-            <SearchIcon />
-          </InputAdornment>
-        }
         required
+        disabled={!formData.state}
         sx={{ minWidth: 200, width: "100%" }}
       >
-        <MenuItem disabled value="" selected>
-          City
+        <MenuItem disabled value="">
+          {formData.state ? "Select City" : "Select state first"}
         </MenuItem>
         {cities.map((city) => (
           <MenuItem key={city} value={city}>

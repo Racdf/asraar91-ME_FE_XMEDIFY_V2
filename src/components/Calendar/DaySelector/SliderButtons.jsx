@@ -1,44 +1,30 @@
 import { useSwiper } from 'swiper/react';
-import next from '../../../assets/next.png'
-import prev from '../../../assets/prev.png'
+import nextIcon from '../../../assets/next.png';
+import prevIcon from '../../../assets/prev.png';
 import { Box } from '@mui/material';
 
-function SlidePrevButton() {
-    const swiper = useSwiper();
-    return (
-        <Box
-            component='img'
-            src={prev}
-            onClick={() => swiper.slidePrev()}
-            height={48}
-            width={48}
-            position='absolute'
-            left={0}
-            top={0}
-            sx={{ cursor: 'pointer' }}
-            zIndex={999}
-            bgcolor='#fff'
-        ></Box>
-    );
+function SlideButton({ direction }) {
+  const swiper = useSwiper();
+  const isNext = direction === 'next';
+
+  return (
+    <Box
+      component="img"
+      src={isNext ? nextIcon : prevIcon}
+      onClick={() => (isNext ? swiper.slideNext() : swiper.slidePrev())}
+      height={48}
+      width={48}
+      position="absolute"
+      top={0}
+      {...(isNext ? { right: 0 } : { left: 0 })}
+      sx={{ cursor: 'pointer' }}
+      zIndex={999}
+      bgcolor="#fff"
+    />
+  );
 }
 
-function SlideNextButton() {
-    const swiper = useSwiper();
-    return (
-        <Box
-            component='img'
-            src={next}
-            onClick={() => swiper.slideNext()}
-            height={48}
-            width={48}
-            position='absolute'
-            right={0}
-            top={0}
-            sx={{ cursor: 'pointer' }}
-            zIndex={999}
-            bgcolor='#fff'
-        ></Box>
-    );
-}
+const SlidePrevButton = () => <SlideButton direction="prev" />;
+const SlideNextButton = () => <SlideButton direction="next" />;
 
-export { SlideNextButton, SlidePrevButton }
+export { SlideNextButton, SlidePrevButton };

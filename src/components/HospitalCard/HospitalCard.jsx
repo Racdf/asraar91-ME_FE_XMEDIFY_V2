@@ -1,8 +1,8 @@
 import icon from "../../assets/hospitalicon.png";
-import { Box, Button, Chip, Divider, Stack, Typography } from "@mui/material";
 import thumb from "../../assets/thumbsup.png";
+import { Box, Button, Chip, Divider, Stack, Typography } from "@mui/material";
 import Calendar from "../Calendar/Calendar";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { format } from "date-fns";
 
 export default function HospitalCard({
@@ -13,20 +13,35 @@ export default function HospitalCard({
 }) {
   const [showCalendar, setShowCalendar] = useState(false);
 
+  const rating = useMemo(
+    () =>
+      details["Hospital overall rating"] === "Not Available"
+        ? 0
+        : details["Hospital overall rating"],
+    [details]
+  );
+
+  const chipStyle = {
+    borderRadius: 1,
+    fontSize: 14,
+  };
+
   return (
     <Box sx={{ borderRadius: 2, bgcolor: "#fff", p: { xs: 2, md: 4 } }}>
       <Stack
         direction={{ xs: "column", md: "row" }}
         spacing={{ xs: 1, md: 4 }}
-        flexWrap={"wrap"}
+        flexWrap="wrap"
       >
         <Box
           component="img"
           src={icon}
+          alt="Hospital icon"
           width={{ xs: 64, md: 130 }}
           height="auto"
           sx={{ flexShrink: 0, alignSelf: "start" }}
         />
+
         <Box flex={1}>
           <Typography
             component="h3"
@@ -37,7 +52,7 @@ export default function HospitalCard({
             textTransform="capitalize"
             lineHeight={1}
           >
-            {details["Hospital Name"].toLowerCase()}
+            {details["Hospital Name"]}
           </Typography>
           <Typography
             textTransform="capitalize"
@@ -45,11 +60,12 @@ export default function HospitalCard({
             fontSize={14}
             fontWeight={700}
           >
-            {`${details["City"].toLowerCase()}, ${details["State"]}`}
+            {`${details["City"]}, ${details["State"]}`}
           </Typography>
           <Typography fontSize={14} mb={1}>
             {details["Hospital Type"]}
           </Typography>
+
           <Stack direction="row" flexWrap="wrap" spacing="4px" mb={2}>
             <Typography
               fontWeight={800}
@@ -65,7 +81,9 @@ export default function HospitalCard({
             </Typography>
             <Typography>Consultation fee at clinic</Typography>
           </Stack>
+
           <Divider sx={{ borderStyle: "dashed", mb: 2 }} />
+
           <Stack
             direction="row"
             alignItems="center"
@@ -77,8 +95,9 @@ export default function HospitalCard({
             spacing="4px"
           >
             <Box
-              component={"img"}
+              component="img"
               src={thumb}
+              alt="Thumbs up"
               width={{ xs: 16, md: 20 }}
               height={{ xs: 16, md: 20 }}
             />
@@ -88,9 +107,7 @@ export default function HospitalCard({
               color="#fff"
               sx={{ opacity: 0.5 }}
             >
-              {details["Hospital overall rating"] === "Not Available"
-                ? 0
-                : details["Hospital overall rating"]}
+              {rating}
             </Typography>
           </Stack>
         </Box>
@@ -99,7 +116,7 @@ export default function HospitalCard({
           justifyContent={booking ? "flex-start" : "flex-end"}
           minWidth="23%"
         >
-          {!booking && (
+          {!booking ? (
             <>
               <Typography
                 textAlign="center"
@@ -115,32 +132,22 @@ export default function HospitalCard({
                 disableElevation
                 onClick={() => setShowCalendar((prev) => !prev)}
               >
-                {!showCalendar
-                  ? "Book FREE Center Visit"
-                  : "Hide Booking Calendar"}
+                {showCalendar ? "Hide Booking Calendar" : "Book FREE Center Visit"}
               </Button>
             </>
-          )}
-
-          {booking && (
+          ) : (
             <Stack direction="row" spacing={1} mt={{ xs: 2, md: 0 }}>
               <Chip
                 label={details.bookingTime}
                 variant="outlined"
                 color="primary"
-                sx={{
-                  borderRadius: 1,
-                  fontSize: 14,
-                }}
+                sx={chipStyle}
               />
               <Chip
                 label={format(new Date(details.bookingDate), "dd MMMM yyyy")}
                 variant="outlined"
                 color="success"
-                sx={{
-                  borderRadius: 1,
-                  fontSize: 14,
-                }}
+                sx={chipStyle}
               />
             </Stack>
           )}
