@@ -17,6 +17,9 @@ export default function MyBookings() {
   useEffect(() => {
     setFilteredBookings(bookings);
   }, [bookings]);
+
+  //Separate page/component to render all the booked hospitals of user alogwith chosen date and time slot
+  //It utilises HospitalCard component to generate the cards with data
   return (
     <>
       <NavBar />
@@ -70,7 +73,8 @@ export default function MyBookings() {
               spacing={3}
               width={{ xs: 1, md: "calc(100% - 384px)" }}
               mr="24px"
-            > 
+            >
+                
               {filteredBookings.length > 0 &&
                 filteredBookings.map((hospital) => (
                   <HospitalCard

@@ -1,35 +1,64 @@
-import { Modal, Typography, Box, TextField, Button, Stack } from "@mui/material";
+import {
+  Modal,
+  Typography,
+  Box,
+  TextField,
+  Button,
+  Stack,
+} from "@mui/material";
 import { useState } from "react";
 import { format } from "date-fns";
 
-export default function BookingModal({ setOpen, open, bookingDetails, showSuccessMessage }) {
+export default function BookingModal({
+  setOpen,
+  open,
+  bookingDetails,
+  showSuccessMessage,
+}) {
   const [email, setEmail] = useState("");
 
-  const saveBooking = (details) => {
-    const stored = localStorage.getItem("bookings") || "[]";
-    const parsed = JSON.parse(stored);
-    localStorage.setItem("bookings", JSON.stringify([...parsed, details]));
-  };
-
-  const fireAnalyticsEvent = () => {
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-      event: "first_visit",
-      eventDate: new Date().toISOString(),
-    });
-  };
-
-  const handleSubmit = (e) => {
+  const handleBooking = (e) => {
     e.preventDefault();
-    fireAnalyticsEvent();
-    saveBooking({ ...bookingDetails, bookingEmail: email });
+    triggerEvent();
+
+    const bookings = localStorage.getItem("bookings") || "[]";
+
+    const oldBookings = JSON.parse(bookings);
+
+    localStorage.setItem(
+      "bookings",
+      JSON.stringify([
+        ...oldBookings,
+        { ...bookingDetails, bookingEmail: email },
+      ])
+    );
     showSuccessMessage(true);
     setEmail("");
     setOpen(false);
   };
 
-  const getFormattedDate = (day) => {
-    return day ? format(new Date(day), "E, d LLL") : null;
+  const triggerEvent = () => {
+    // Ensure dataLayer is defined
+    window.dataLayer = window.dataLayer || [];
+
+    // Function to push the first_visit event to the dataLayer
+    function triggerFirstVisitEvent() {
+      window.dataLayer.push({
+        event: "first_visit",
+        eventDate: new Date().toISOString(), // Optional: track the exact time of the event
+      });
+    }
+
+    triggerFirstVisitEvent();
+  };
+
+  const formatDate = (day) => {
+    if (day) {
+      const date = new Date(day);
+      return format(date, "E, d LLL");
+    } else {
+      return null;
+    }
   };
 
   return (
@@ -53,12 +82,16 @@ export default function BookingModal({ setOpen, open, bookingDetails, showSucces
           Confirm booking
         </Typography>
         <Typography fontSize={14} mb={3}>
-          <Box component="span">Please enter your email to confirm booking for </Box>
+          <Box component="span">
+            Please enter your email to confirm booking for{" "}
+          </Box>
           <Box component="span" fontWeight={600}>
-            {`${bookingDetails.bookingTime} on ${getFormattedDate(bookingDetails.bookingDate)}`}
+            {`${bookingDetails.bookingTime} on ${formatDate(
+              bookingDetails.bookingDate
+            )}`}
           </Box>
         </Typography>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleBooking}>
           <Stack alignItems="flex-start" spacing={2}>
             <TextField
               type="email"
@@ -70,10 +103,20 @@ export default function BookingModal({ setOpen, open, bookingDetails, showSucces
               onChange={(e) => setEmail(e.target.value)}
             />
             <Stack direction="row" spacing={1}>
-              <Button type="submit" variant="contained" size="large" disableElevation>
+              <Button
+                type="submit"
+                variant="contained"
+                size="large"
+                disableElevation
+              >
                 Confirm
               </Button>
-              <Button variant="outlined" size="large" disableElevation onClick={() => setOpen(false)}>
+              <Button
+                variant="outlined"
+                size="large"
+                disableElevation
+                onClick={() => setOpen(false)}
+              >
                 Cancel
               </Button>
             </Stack>

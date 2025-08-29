@@ -13,7 +13,6 @@ import styles from "./NavBar.module.css";
 import { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import MenuIcon from "@mui/icons-material/Menu";
-import clsx from "clsx";
 
 export default function NavBar() {
   const isMobile = useMediaQuery("(max-width:900px)");
@@ -38,14 +37,14 @@ export default function NavBar() {
           py={2}
         >
           <Link to="/">
-            <Box component="img" src={logo} alt="Logo" height={27} />
+            <img src={logo} alt="Logo" height={27} />
           </Link>
 
           <Stack
             direction={{ xs: "column", md: "row" }}
             spacing={4}
             alignItems={{ xs: "flex-start", md: "center" }}
-            className={clsx(styles.navlinks, menuOpen && styles.active)}
+            className={[styles.navlinks, menuOpen && styles.active]}
             pt={{ xs: 12, md: 1 }}
             pb={{ xs: 4, md: 1 }}
             px={{ xs: 4, md: 0 }}
@@ -65,7 +64,6 @@ export default function NavBar() {
             {isMobile && (
               <IconButton
                 onClick={() => setMenuOpen(false)}
-                aria-label="Close menu"
                 sx={{
                   position: "absolute",
                   top: 0,
@@ -78,11 +76,8 @@ export default function NavBar() {
             )}
           </Stack>
 
-          {isMobile && !menuOpen && (
-            <IconButton
-              onClick={() => setMenuOpen(true)}
-              aria-label="Open menu"
-            >
+          {isMobile && (
+            <IconButton onClick={() => setMenuOpen(true)}>
               <MenuIcon />
             </IconButton>
           )}

@@ -1,28 +1,26 @@
-import Snackbar from '@mui/material/Snackbar';
 import { Alert } from '@mui/material';
+import Snackbar from '@mui/material/Snackbar';
 
 export default function AutohideSnackbar({ open, setOpen, message }) {
-    const closeHandler = (event, reason) => {
-        if (reason === 'clickaway') return;
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
         setOpen(false);
     };
-
-    const origin = { vertical: 'bottom', horizontal: 'center' };
 
     return (
         <Snackbar
             open={open}
             autoHideDuration={5000}
-            onClose={closeHandler}
-            anchorOrigin={origin}
+            onClose={handleClose}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         >
-            <Alert
-                onClose={closeHandler}
-                icon={false}
-                sx={{ bgcolor: 'primary.green', color: '#fff' }}
-            >
+            <Alert onClose={handleClose} icon={false} sx={{bgcolor:'primary.green', color:'#fff'}}>
                 {message}
             </Alert>
         </Snackbar>
-    );
+    )
 }

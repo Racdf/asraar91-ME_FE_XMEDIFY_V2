@@ -8,7 +8,7 @@ import IconCard from "../IconCard/IconCard";
 import { useMemo } from "react";
 
 export default function HeroServices() {
-  const services = useMemo(
+  const Services = useMemo(
     () => [
       { img: doctorIcon, title: "Doctors" },
       { img: pharmacyIcon, title: "Labs" },
@@ -23,27 +23,26 @@ export default function HeroServices() {
     <Box>
       <Typography
         component="h4"
-        fontSize={{ xs: 18, md: 20 }}
-        color="primary.dark"
+        fontSize={20}
+        color="#102851"
         fontWeight={500}
         textAlign="center"
-        mb={3}
+        mb={2}
       >
         You may be looking for
       </Typography>
       <Grid
         container
-        rowSpacing={2}
         columnSpacing={{ xs: 1, md: 2 }}
-        justifyContent="center"
+        justifyContent={"center"}
       >
-        {services.map((service) => (
-          <Grid item key={service.title} xs={6} sm={4} md={2}>
+        {Services.map((service) => (
+          <Grid item key={service.title} xs={4} md={2.4}>
             <IconCard
               img={service.img}
               title={service.title}
               active={service.active || false}
-              bgColor="grey.50"
+              bgColor="#FAFBFE"
             />
           </Grid>
         ))}

@@ -11,10 +11,10 @@ import AutohideSnackbar from "../components/AutohideSnackbar/AutohideSnackbar";
 import NavBar from "../components/NavBar/NavBar";
 
 export default function Search() {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [seachParams, setSearchParams] = useSearchParams();
   const [hospitals, setHospitals] = useState([]);
-  const [state, setState] = useState(searchParams.get("state") || "");
-  const [city, setCity] = useState(searchParams.get("city") || "");
+  const [state, setState] = useState(seachParams.get("state"));
+  const [city, setCity] = useState(seachParams.get("city"));
   const availableSlots = {
     morning: ["11:30 AM"],
     afternoon: ["12:00 PM", "12:30 PM", "01:30 PM", "02:00 PM", "02:30 PM"],
@@ -25,6 +25,7 @@ export default function Search() {
   const [showBookingSuccess, setShowBookingSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  //API to fetch hospitals based on state and city selection 
   useEffect(() => {
     const getHospitals = async () => {
       setHospitals([]);
@@ -34,9 +35,9 @@ export default function Search() {
           `https://meddata-backend.onrender.com/data?state=${state}&city=${city}`
         );
         setHospitals(data.data);
+        setIsLoading(false);
       } catch (err) {
         console.log(err);
-      } finally {
         setIsLoading(false);
       }
     };
@@ -47,10 +48,11 @@ export default function Search() {
   }, [state, city]);
 
   useEffect(() => {
-    setState(searchParams.get("state") || "");
-    setCity(searchParams.get("city") || "");
-  }, [searchParams, setSearchParams]);
+    setState(seachParams.get("state"));
+    setCity(seachParams.get("city"));
+  }, [seachParams, setSearchParams]);
 
+  // show booking modal
   const handleBookingModal = (details) => {
     setBookingDetails(details);
     setIsModalOpen(true);
@@ -80,7 +82,7 @@ export default function Search() {
               background: "#fff",
               p: 3,
               borderRadius: 2,
-              transform: "translateY(50px)",
+              transform: "translatey(50px)",
               mb: "50px",
               boxShadow: "0 0 10px rgba(0,0,0,0.1)",
             }}
@@ -101,7 +103,7 @@ export default function Search() {
               >
                 {`${hospitals.length} medical centers available in `}
                 <span style={{ textTransform: "capitalize" }}>
-                  {city ? city.toLocaleLowerCase() : ""}
+                  {city.toLocaleLowerCase()}
                 </span>
               </Typography>
               <Stack direction="row" spacing={2}>
@@ -137,7 +139,7 @@ export default function Search() {
                 </Typography>
               )}
 
-              {!state && !isLoading && (
+              {!state && (
                 <Typography variant="h3" bgcolor="#fff" p={3} borderRadius={2}>
                   Please select a state and city
                 </Typography>
